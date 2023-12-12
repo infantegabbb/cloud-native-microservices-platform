@@ -1,0 +1,13 @@
+bin/
+obj/
+TestResults/
+*.log
+.terraform/
+*.tfstate
+*.tfstate.*
+.DS_Store
+.vscode/
+.idea/
+.env
+*.pem
+credentials.json
