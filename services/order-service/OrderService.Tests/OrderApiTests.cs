@@ -17,3 +17,17 @@ public class OrderApiTests
         using var factory = CreateFactory(_ => OkUser());
         using var client = factory.CreateClient();
 
+        var response = await client.GetAsync("/health");
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("ok", body.GetProperty("status").GetString());
+        Assert.Equal("order-service", body.GetProperty("service").GetString());
+    }
+
+    [Fact]
+    public async Task ListOrders_ReturnsSeedOrder()
+    {
+        using var factory = CreateFactory(_ => OkUser());
+        using var client = factory.CreateClient();
+
