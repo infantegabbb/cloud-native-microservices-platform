@@ -31,3 +31,21 @@ public class OrderApiTests
         using var factory = CreateFactory(_ => OkUser());
         using var client = factory.CreateClient();
 
+        var response = await client.GetAsync("/orders");
+        var orders = await response.Content.ReadFromJsonAsync<JsonElement>();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(1, orders.GetArrayLength());
+        Assert.Equal(1, orders[0].GetProperty("id").GetInt32());
+        Assert.Equal("Mechanical Keyboard", orders[0].GetProperty("product").GetString());
+    }
+
+    [Theory]
+    [InlineData(0, "Keyboard", 1)]
+    [InlineData(1, "", 1)]
+    [InlineData(1, "Keyboard", 0)]
+    public async Task CreateOrder_InvalidInput_ReturnsBadRequest(int userId, string product, int quantity)
+    {
+        using var factory = CreateFactory(_ => OkUser());
+        using var client = factory.CreateClient();
+
