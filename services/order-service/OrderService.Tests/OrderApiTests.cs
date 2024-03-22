@@ -49,3 +49,14 @@ public class OrderApiTests
         using var factory = CreateFactory(_ => OkUser());
         using var client = factory.CreateClient();
 
+        var response = await client.PostAsJsonAsync("/orders", new { userId, product, quantity });
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task CreateOrder_UnknownUser_ReturnsBadRequest()
+    {
+        using var factory = CreateFactory(_ => new HttpResponseMessage(HttpStatusCode.NotFound));
+        using var client = factory.CreateClient();
+
