@@ -60,3 +60,16 @@ public class OrderApiTests
         using var factory = CreateFactory(_ => new HttpResponseMessage(HttpStatusCode.NotFound));
         using var client = factory.CreateClient();
 
+        var response = await client.PostAsJsonAsync("/orders", new { userId = 99, product = "Cloud Book", quantity = 1 });
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>();
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal("user does not exist", body.GetProperty("error").GetString());
+    }
+
+    [Fact]
+    public async Task CreateOrder_UserServiceUnreachable_ReturnsServiceUnavailable()
+    {
+        using var factory = CreateFactory(_ => throw new HttpRequestException("user-service unreachable"));
+        using var client = factory.CreateClient();
+
