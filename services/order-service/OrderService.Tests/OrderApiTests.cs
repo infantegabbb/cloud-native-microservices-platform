@@ -73,3 +73,14 @@ public class OrderApiTests
         using var factory = CreateFactory(_ => throw new HttpRequestException("user-service unreachable"));
         using var client = factory.CreateClient();
 
+        var response = await client.PostAsJsonAsync("/orders", new { userId = 1, product = "Cloud Book", quantity = 2 });
+
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task CreateOrder_ExistingUser_ReturnsCreated()
+    {
+        using var factory = CreateFactory(_ => OkUser());
+        using var client = factory.CreateClient();
+
