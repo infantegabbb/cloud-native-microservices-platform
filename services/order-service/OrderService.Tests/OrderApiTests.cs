@@ -84,3 +84,28 @@ public class OrderApiTests
         using var factory = CreateFactory(_ => OkUser());
         using var client = factory.CreateClient();
 
+        var response = await client.PostAsJsonAsync("/orders", new { userId = 1, product = " Cloud Book ", quantity = 2 });
+        var body = await response.Content.ReadFromJsonAsync<JsonElement>();
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.EndsWith("/orders/2", response.Headers.Location?.ToString() ?? string.Empty);
+        Assert.Equal(2, body.GetProperty("id").GetInt32());
+        Assert.Equal(1, body.GetProperty("userId").GetInt32());
+        Assert.Equal("Cloud Book", body.GetProperty("product").GetString());
+        Assert.Equal(2, body.GetProperty("quantity").GetInt32());
+        Assert.Equal("created", body.GetProperty("status").GetString());
+    }
+
+    private static WebApplicationFactory<Program> CreateFactory(Func<HttpRequestMessage, HttpResponseMessage> handler)
+    {
+        var factoryStub = new StubHttpClientFactory(new StubHandler(handler));
+        return new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+        {
+            builder.ConfigureTestServices(services =>
+            {
+                services.RemoveAll<IHttpClientFactory>();
+                services.AddSingleton<IHttpClientFactory>(factoryStub);
+            });
+        });
+    }
+
