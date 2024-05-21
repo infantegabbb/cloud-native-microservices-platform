@@ -109,3 +109,13 @@ public class OrderApiTests
         });
     }
 
+    private static HttpResponseMessage OkUser() =>
+        new(HttpStatusCode.OK)
+        {
+            Content = JsonContent.Create(new { id = 1, name = "Ada Lovelace", email = "ada@example.com" })
+        };
+
+    private sealed class StubHandler : HttpMessageHandler
+    {
+        private readonly Func<HttpRequestMessage, HttpResponseMessage> _handler;
+
