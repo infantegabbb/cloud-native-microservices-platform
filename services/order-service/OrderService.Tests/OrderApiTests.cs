@@ -119,3 +119,13 @@ public class OrderApiTests
     {
         private readonly Func<HttpRequestMessage, HttpResponseMessage> _handler;
 
+        public StubHandler(Func<HttpRequestMessage, HttpResponseMessage> handler) => _handler = handler;
+
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+            Task.FromResult(_handler(request));
+    }
+
+    private sealed class StubHttpClientFactory : IHttpClientFactory
+    {
+        private readonly HttpClient _client;
+
