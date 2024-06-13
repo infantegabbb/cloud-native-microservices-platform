@@ -129,3 +129,9 @@ public class OrderApiTests
     {
         private readonly HttpClient _client;
 
+        public StubHttpClientFactory(HttpMessageHandler handler) =>
+            _client = new HttpClient(handler) { BaseAddress = new Uri("http://user-service") };
+
+        public HttpClient CreateClient(string name) => _client;
+    }
+}
