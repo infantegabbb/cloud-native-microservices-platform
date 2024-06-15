@@ -7,3 +7,7 @@ builder.Services.AddHttpClient(string.Empty, client =>
 });
 var app = builder.Build();
 
+var orders = new ConcurrentDictionary<int, Order>();
+orders[1] = new Order(1, 1, "Mechanical Keyboard", 1, "created");
+var nextId = 2;
+
