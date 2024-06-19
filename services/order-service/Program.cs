@@ -20,3 +20,16 @@ app.MapPost("/orders", async (CreateOrder input, IHttpClientFactory clientFactor
     if (input.UserId <= 0 || string.IsNullOrWhiteSpace(input.Product) || input.Quantity <= 0)
         return Results.BadRequest(new { error = "userId, product and positive quantity are required" });
 
+    var userService = Environment.GetEnvironmentVariable("USER_SERVICE_URL") ?? "http://localhost:8080";
+    try
+    {
+        var client = clientFactory.CreateClient();
+        using var response = await client.GetAsync($"{userService}/users/{input.UserId}");
+        if (!response.IsSuccessStatusCode)
+            return Results.BadRequest(new { error = "user does not exist" });
+    }
+    catch
+    {
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+    }
+
