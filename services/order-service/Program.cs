@@ -33,3 +33,9 @@ app.MapPost("/orders", async (CreateOrder input, IHttpClientFactory clientFactor
         return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
     }
 
+    var id = Interlocked.Increment(ref nextId) - 1;
+    var order = new Order(id, input.UserId, input.Product.Trim(), input.Quantity, "created");
+    orders[id] = order;
+    return Results.Created($"/orders/{id}", order);
+});
+
