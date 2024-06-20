@@ -39,3 +39,9 @@ app.MapPost("/orders", async (CreateOrder input, IHttpClientFactory clientFactor
     return Results.Created($"/orders/{id}", order);
 });
 
+app.Run();
+
+public partial class Program { }
+
+record Order(int Id, int UserId, string Product, int Quantity, string Status);
+record CreateOrder(int UserId, string Product, int Quantity);
