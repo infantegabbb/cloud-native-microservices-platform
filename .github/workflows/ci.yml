@@ -5,3 +5,56 @@ on:
     branches: [main]
   pull_request:
 
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache: false
+      - name: Test Go service
+        working-directory: services/user-service
+        run: go test ./...
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Test .NET service
+        working-directory: services/order-service
+        run: dotnet test OrderService.Tests/OrderService.Tests.csproj --configuration Release --verbosity minimal
+
+  terraform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.8"
+          terraform_wrapper: false
+      - name: Validate Terraform
+        working-directory: infra/terraform
+        run: |
+          terraform fmt -check -diff
+          terraform init -backend=false -input=false
+          terraform validate
+
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start stack
+        run: docker compose up --build -d --wait --wait-timeout 180
+      - name: Smoke test
+        run: python3 scripts/smoke_test.py
+      - name: Dump logs
+        if: failure()
+        run: docker compose logs
+      - name: Stop stack
+        if: always()
+        run: docker compose down -v
