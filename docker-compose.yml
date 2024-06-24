@@ -1,0 +1,27 @@
+services:
+  user-service:
+    build: ./services/user-service
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+
+  order-service:
+    build: ./services/order-service
+    environment:
+      USER_SERVICE_URL: http://user-service:8080
+    ports:
+      - "8081:8081"
+    depends_on:
+      user-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8081/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
