@@ -17,3 +17,8 @@ func decodeJSON[T any](t *testing.T, rec *httptest.ResponseRecorder) T {
 	return value
 }
 
+func TestHealth(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "/health", nil)
+	rec := httptest.NewRecorder()
+	NewMux(NewStore()).ServeHTTP(rec, req)
+
