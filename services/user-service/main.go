@@ -15,3 +15,9 @@ type User struct {
 	Email string `json:"email"`
 }
 
+type Store struct {
+	mu     sync.RWMutex
+	users  map[int]User
+	nextID int
+}
+
