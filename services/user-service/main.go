@@ -21,3 +21,13 @@ type Store struct {
 	nextID int
 }
 
+func NewStore() *Store {
+	return &Store{
+		users: map[int]User{
+			1: {ID: 1, Name: "Ada Lovelace", Email: "ada@example.com"},
+			2: {ID: 2, Name: "Grace Hopper", Email: "grace@example.com"},
+		},
+		nextID: 3,
+	}
+}
+
