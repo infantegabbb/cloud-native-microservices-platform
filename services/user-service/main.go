@@ -39,3 +39,9 @@ func NewMux(store *Store) http.Handler {
 	return mux
 }
 
+func writeJSON(w http.ResponseWriter, code int, value any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	_ = json.NewEncoder(w).Encode(value)
+}
+
