@@ -31,3 +31,11 @@ func NewStore() *Store {
 	}
 }
 
+func NewMux(store *Store) http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/health", health)
+	mux.HandleFunc("/users", store.usersHandler)
+	mux.HandleFunc("/users/", store.userByID)
+	return mux
+}
+
