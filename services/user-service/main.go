@@ -45,3 +45,7 @@ func writeJSON(w http.ResponseWriter, code int, value any) {
 	_ = json.NewEncoder(w).Encode(value)
 }
 
+func health(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]string{"status": "ok", "service": "user-service"})
+}
+
