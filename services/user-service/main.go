@@ -76,3 +76,20 @@ func (s *Store) usersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (s *Store) userByID(w http.ResponseWriter, r *http.Request) {
+	idText := r.URL.Path[len("/users/"):]
+	id, err := strconv.Atoi(idText)
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid user id"})
+		return
+	}
+	s.mu.RLock()
+	user, ok := s.users[id]
+	s.mu.RUnlock()
+	if !ok {
+		writeJSON(w, http.StatusNotFound, map[string]string{"error": "user not found"})
+		return
+	}
+	writeJSON(w, http.StatusOK, user)
+}
+
