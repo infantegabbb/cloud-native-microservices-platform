@@ -93,3 +93,11 @@ func (s *Store) userByID(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, user)
 }
 
+func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	log.Printf("user-service listening on :%s", port)
+	log.Fatal(http.ListenAndServe(":"+port, NewMux(NewStore())))
+}
