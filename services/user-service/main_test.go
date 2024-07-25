@@ -22,3 +22,12 @@ func TestHealth(t *testing.T) {
 	rec := httptest.NewRecorder()
 	NewMux(NewStore()).ServeHTTP(rec, req)
 
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
+	}
+	body := decodeJSON[map[string]string](t, rec)
+	if body["status"] != "ok" || body["service"] != "user-service" {
+		t.Fatalf("unexpected body: %v", body)
+	}
+}
+
