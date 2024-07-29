@@ -31,3 +31,8 @@ func TestHealth(t *testing.T) {
 	}
 }
 
+func TestListUsersReturnsSeedData(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "/users", nil)
+	rec := httptest.NewRecorder()
+	NewMux(NewStore()).ServeHTTP(rec, req)
+
