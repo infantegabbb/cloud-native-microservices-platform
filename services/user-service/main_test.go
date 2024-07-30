@@ -36,3 +36,19 @@ func TestListUsersReturnsSeedData(t *testing.T) {
 	rec := httptest.NewRecorder()
 	NewMux(NewStore()).ServeHTTP(rec, req)
 
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
+	}
+	users := decodeJSON[[]User](t, rec)
+	if len(users) != 2 {
+		t.Fatalf("user count = %d, want 2", len(users))
+	}
+	byID := map[int]User{}
+	for _, user := range users {
+		byID[user.ID] = user
+	}
+	if byID[1].Name != "Ada Lovelace" || byID[2].Email != "grace@example.com" {
+		t.Fatalf("unexpected seed users: %v", users)
+	}
+}
+
