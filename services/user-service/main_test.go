@@ -52,3 +52,8 @@ func TestListUsersReturnsSeedData(t *testing.T) {
 	}
 }
 
+func TestCreateUserSuccess(t *testing.T) {
+	req := httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(`{"name":"Jeff","email":"jeff@example.com"}`))
+	rec := httptest.NewRecorder()
+	NewMux(NewStore()).ServeHTTP(rec, req)
+
