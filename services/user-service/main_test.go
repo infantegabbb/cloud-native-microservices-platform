@@ -57,3 +57,12 @@ func TestCreateUserSuccess(t *testing.T) {
 	rec := httptest.NewRecorder()
 	NewMux(NewStore()).ServeHTTP(rec, req)
 
+	if rec.Code != http.StatusCreated {
+		t.Fatalf("status = %d, want %d body=%s", rec.Code, http.StatusCreated, rec.Body.String())
+	}
+	user := decodeJSON[User](t, rec)
+	if user.ID != 3 || user.Name != "Jeff" || user.Email != "jeff@example.com" {
+		t.Fatalf("unexpected user: %+v", user)
+	}
+}
+
