@@ -66,3 +66,15 @@ func TestCreateUserSuccess(t *testing.T) {
 	}
 }
 
+func TestCreateUserMissingFields(t *testing.T) {
+	cases := []string{`{}`, `{"name":"Jeff"}`, `{"email":"jeff@example.com"}`, `not-json`}
+	for _, body := range cases {
+		req := httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(body))
+		rec := httptest.NewRecorder()
+		NewMux(NewStore()).ServeHTTP(rec, req)
+		if rec.Code != http.StatusBadRequest {
+			t.Fatalf("body %q status = %d, want %d", body, rec.Code, http.StatusBadRequest)
+		}
+	}
+}
+
