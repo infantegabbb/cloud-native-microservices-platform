@@ -78,3 +78,19 @@ func TestCreateUserMissingFields(t *testing.T) {
 	}
 }
 
+func TestGetUserByID(t *testing.T) {
+	mux := NewMux(NewStore())
+
+	t.Run("found", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/users/1", nil)
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+		if rec.Code != http.StatusOK {
+			t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
+		}
+		user := decodeJSON[User](t, rec)
+		if user.Name != "Ada Lovelace" {
+			t.Fatalf("unexpected user: %+v", user)
+		}
+	})
+
