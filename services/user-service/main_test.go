@@ -103,3 +103,13 @@ func TestGetUserByID(t *testing.T) {
 		}
 	})
 
+	t.Run("invalid id", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/users/abc", nil)
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+		if rec.Code != http.StatusBadRequest {
+			t.Fatalf("status = %d, want %d", rec.Code, http.StatusBadRequest)
+		}
+	})
+}
+
