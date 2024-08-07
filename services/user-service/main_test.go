@@ -113,3 +113,9 @@ func TestGetUserByID(t *testing.T) {
 	})
 }
 
+func TestStoresAreIsolated(t *testing.T) {
+	first := httptest.NewRecorder()
+	NewMux(NewStore()).ServeHTTP(first, httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(`{"name":"A","email":"a@example.com"}`)))
+	second := httptest.NewRecorder()
+	NewMux(NewStore()).ServeHTTP(second, httptest.NewRequest(http.MethodGet, "/users", nil))
+
