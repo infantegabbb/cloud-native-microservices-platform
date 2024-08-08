@@ -119,3 +119,8 @@ func TestStoresAreIsolated(t *testing.T) {
 	second := httptest.NewRecorder()
 	NewMux(NewStore()).ServeHTTP(second, httptest.NewRequest(http.MethodGet, "/users", nil))
 
+	users := decodeJSON[[]User](t, second)
+	if len(users) != 2 {
+		t.Fatalf("second store leaked first store writes: %v", users)
+	}
+}
