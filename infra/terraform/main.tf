@@ -23,3 +23,15 @@ resource "kubernetes_deployment" "user" {
       }
     }
 
+    template {
+      metadata {
+        labels = {
+          app = "user-service"
+        }
+      }
+
+      spec {
+        container {
+          name  = "user-service"
+          image = var.user_image
+
