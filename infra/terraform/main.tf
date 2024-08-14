@@ -35,3 +35,13 @@ resource "kubernetes_deployment" "user" {
           name  = "user-service"
           image = var.user_image
 
+          port {
+            container_port = 8080
+          }
+
+          readiness_probe {
+            http_get {
+              path = "/health"
+              port = 8080
+            }
+
