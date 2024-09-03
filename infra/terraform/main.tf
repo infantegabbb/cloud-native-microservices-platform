@@ -45,3 +45,13 @@ resource "kubernetes_deployment" "user" {
               port = 8080
             }
 
+            initial_delay_seconds = 3
+            period_seconds        = 5
+          }
+
+          liveness_probe {
+            http_get {
+              path = "/health"
+              port = 8080
+            }
+
