@@ -55,3 +55,13 @@ resource "kubernetes_deployment" "user" {
               port = 8080
             }
 
+            initial_delay_seconds = 5
+            period_seconds        = 10
+          }
+
+          resources {
+            requests = {
+              cpu    = "50m"
+              memory = "32Mi"
+            }
+
