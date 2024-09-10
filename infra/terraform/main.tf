@@ -65,3 +65,20 @@ resource "kubernetes_deployment" "user" {
               memory = "32Mi"
             }
 
+            limits = {
+              cpu    = "250m"
+              memory = "128Mi"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "user" {
+  metadata {
+    name      = "user-service"
+    namespace = kubernetes_namespace.app.metadata[0].name
+  }
+
