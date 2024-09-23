@@ -82,3 +82,15 @@ resource "kubernetes_service" "user" {
     namespace = kubernetes_namespace.app.metadata[0].name
   }
 
+  spec {
+    selector = {
+      app = "user-service"
+    }
+
+    port {
+      port        = 8080
+      target_port = 8080
+    }
+  }
+}
+
