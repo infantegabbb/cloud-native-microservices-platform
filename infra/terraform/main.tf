@@ -94,3 +94,18 @@ resource "kubernetes_service" "user" {
   }
 }
 
+resource "kubernetes_deployment" "order" {
+  metadata {
+    name      = "order-service"
+    namespace = kubernetes_namespace.app.metadata[0].name
+  }
+
+  spec {
+    replicas = 2
+
+    selector {
+      match_labels = {
+        app = "order-service"
+      }
+    }
+
