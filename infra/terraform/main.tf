@@ -109,3 +109,15 @@ resource "kubernetes_deployment" "order" {
       }
     }
 
+    template {
+      metadata {
+        labels = {
+          app = "order-service"
+        }
+      }
+
+      spec {
+        container {
+          name  = "order-service"
+          image = var.order_image
+
