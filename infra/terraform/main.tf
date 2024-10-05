@@ -121,3 +121,12 @@ resource "kubernetes_deployment" "order" {
           name  = "order-service"
           image = var.order_image
 
+          port {
+            container_port = 8081
+          }
+
+          env {
+            name  = "USER_SERVICE_URL"
+            value = "http://user-service:8080"
+          }
+
