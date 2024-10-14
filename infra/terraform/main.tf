@@ -130,3 +130,13 @@ resource "kubernetes_deployment" "order" {
             value = "http://user-service:8080"
           }
 
+          readiness_probe {
+            http_get {
+              path = "/health"
+              port = 8081
+            }
+
+            initial_delay_seconds = 3
+            period_seconds        = 5
+          }
+
