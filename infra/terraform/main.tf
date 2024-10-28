@@ -140,3 +140,13 @@ resource "kubernetes_deployment" "order" {
             period_seconds        = 5
           }
 
+          liveness_probe {
+            http_get {
+              path = "/health"
+              port = 8081
+            }
+
+            initial_delay_seconds = 5
+            period_seconds        = 10
+          }
+
