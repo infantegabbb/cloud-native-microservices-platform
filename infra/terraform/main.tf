@@ -150,3 +150,20 @@ resource "kubernetes_deployment" "order" {
             period_seconds        = 10
           }
 
+          resources {
+            requests = {
+              cpu    = "50m"
+              memory = "64Mi"
+            }
+
+            limits = {
+              cpu    = "300m"
+              memory = "192Mi"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
