@@ -167,3 +167,14 @@ resource "kubernetes_deployment" "order" {
   }
 }
 
+resource "kubernetes_service" "order" {
+  metadata {
+    name      = "order-service"
+    namespace = kubernetes_namespace.app.metadata[0].name
+  }
+
+  spec {
+    selector = {
+      app = "order-service"
+    }
+
