@@ -178,3 +178,11 @@ resource "kubernetes_service" "order" {
       app = "order-service"
     }
 
+    type = "LoadBalancer"
+
+    port {
+      port        = 80
+      target_port = 8081
+    }
+  }
+}
