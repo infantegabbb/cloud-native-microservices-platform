@@ -22,3 +22,21 @@ def post(url, payload):
         return response.status, json.load(response)
 
 
+def wait_for_health(name, url, timeout_seconds=60):
+    deadline = time.time() + timeout_seconds
+    last_error = None
+    while time.time() < deadline:
+        try:
+            status, body = get(url)
+            if 200 <= status < 300:
+                print(f"[PASS] {name}: HTTP {status} {body}")
+                return
+            last_error = f"HTTP {status} {body}"
+        except (urllib.error.URLError, TimeoutError, ConnectionError, json.JSONDecodeError) as err:
+            last_error = err
+        time.sleep(1)
+    print(f"[FAIL] {name}: not reachable at {url} ({last_error})")
+    print("Start the stack first: docker compose up --build -d")
+    sys.exit(1)
+
+
