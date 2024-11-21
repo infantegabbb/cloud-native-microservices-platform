@@ -40,3 +40,29 @@ def wait_for_health(name, url, timeout_seconds=60):
     sys.exit(1)
 
 
+def check(name, status, body):
+    ok = 200 <= status < 300
+    print(f"[{'PASS' if ok else 'FAIL'}] {name}: HTTP {status} {body}")
+    if not ok:
+        sys.exit(1)
+
+
+wait_for_health("user health", "http://localhost:8080/health")
+wait_for_health("order health", "http://localhost:8081/health")
+
+try:
+    status, user = post("http://localhost:8080/users", {"name": "Test User", "email": "test@example.com"})
+    check("create user", status, user)
+    status, order = post(
+        "http://localhost:8081/orders",
+        {"userId": user["id"], "product": "Cloud Book", "quantity": 2},
+    )
+    check("create order", status, order)
+except urllib.error.HTTPError as err:
+    print(f"[FAIL] API call: HTTP {err.code} {err.read().decode(errors='replace')}")
+    sys.exit(1)
+except (urllib.error.URLError, TimeoutError, ConnectionError, json.JSONDecodeError, KeyError) as err:
+    print(f"[FAIL] API call: {err}")
+    sys.exit(1)
+
+print("All smoke tests passed.")
