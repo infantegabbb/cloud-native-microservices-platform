@@ -5,7 +5,7 @@ RUN dotnet restore
 COPY Program.cs .
 RUN dotnet publish -c Release -o /app /p:UseAppHost=false
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 RUN apt-get update \
     && apt-get install -y --no-install-recommends curl \
