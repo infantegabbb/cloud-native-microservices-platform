@@ -4,7 +4,7 @@ COPY go.mod .
 COPY main.go .
 RUN CGO_ENABLED=0 GOOS=linux go build -o /out/user-service .
 
-FROM alpine:3.20
+FROM alpine:3.24
 RUN apk add --no-cache wget \
     && adduser -D -u 10001 appuser
 USER appuser
